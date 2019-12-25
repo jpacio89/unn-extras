@@ -1,0 +1,74 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class DatasetBuilder {
+	String filePath;
+	int timeWindowMs;
+	
+	WavFile wavFile;
+	int channelCount;
+	long sampleRate;
+	
+	String className;
+	int frameCount;
+	
+	public DatasetBuilder() {
+		
+	}
+	
+	public void init(String filePath, int timeWindowMs, String className) {
+		this.filePath = filePath;
+		this.timeWindowMs = timeWindowMs;
+		this.className = className;
+		
+		initAudio();
+	}
+	
+	public void initAudio() {		
+        try {
+            this.wavFile = WavFile.openWavFile(new File(this.filePath));
+            this.wavFile.display();
+            
+            this.channelCount = this.wavFile.getNumChannels();
+            this.sampleRate = this.wavFile.getSampleRate();
+            
+            this.frameCount = (int) (timeWindowMs * sampleRate / 1000.0);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void load() {
+		double[] buffer = new double[this.frameCount * this.channelCount];
+
+        int framesRead;
+
+        try {
+    	   do {
+    		   framesRead = this.wavFile.readFrames(buffer, this.frameCount);
+    		   String[] input = new String[this.frameCount + 1];
+    		   int n = 0;
+    		   input[0] = this.className;
+    		   n++;
+
+               for (int s = 0 ; s < framesRead * this.channelCount; s += this.channelCount) {
+            	   input[n] = Double.toString(buffer[s]);
+            	   n++;
+               }
+               
+               if (framesRead == this.frameCount) {
+            	   String row = String.join(",", input);
+                   System.out.println(row);   
+               }
+            }
+            while (framesRead != 0);
+    	   
+           wavFile.close();
+           
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
