@@ -38,16 +38,21 @@ public class DatasetBuilder {
 		}
 	}
 	
-	public void load() {
+	public int load(int maxLineCount) {
 		double[] buffer = new double[this.frameCount * this.channelCount];
 
         int framesRead;
-
+        int lineCount = 0;
+        
         try {
     	   do {
     		   framesRead = this.wavFile.readFrames(buffer, this.frameCount);
     		   String[] input = new String[this.frameCount + 1];
     		   int n = 0;
+    		   
+    		   if (maxLineCount >= 0 && lineCount >= maxLineCount) {
+    			   break;
+    		   }
 
                for (int s = 0 ; s < framesRead * this.channelCount; s += this.channelCount) {
             	   input[n] = Double.toString(buffer[s]);
@@ -60,6 +65,8 @@ public class DatasetBuilder {
             	   String row = String.join(",", input);
             	   System.out.println(row);
                }
+               
+               lineCount++;
             }
             while (framesRead != 0);
     	   
@@ -68,6 +75,8 @@ public class DatasetBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+        
+        return lineCount;
 	}
 	
 	public void printHeader() {
