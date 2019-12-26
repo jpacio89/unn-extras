@@ -1,6 +1,4 @@
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 
 public class DatasetBuilder {
 	String filePath;
@@ -28,7 +26,7 @@ public class DatasetBuilder {
 	public void initAudio() {		
         try {
             this.wavFile = WavFile.openWavFile(new File(this.filePath));
-            this.wavFile.display();
+            // this.wavFile.display();
             
             this.channelCount = this.wavFile.getNumChannels();
             this.sampleRate = this.wavFile.getSampleRate();
@@ -50,17 +48,17 @@ public class DatasetBuilder {
     		   framesRead = this.wavFile.readFrames(buffer, this.frameCount);
     		   String[] input = new String[this.frameCount + 1];
     		   int n = 0;
-    		   input[0] = this.className;
-    		   n++;
 
                for (int s = 0 ; s < framesRead * this.channelCount; s += this.channelCount) {
             	   input[n] = Double.toString(buffer[s]);
             	   n++;
                }
                
+               input[n] = this.className;
+               
                if (framesRead == this.frameCount) {
             	   String row = String.join(",", input);
-                   System.out.println(row);   
+            	   System.out.println(row);
                }
             }
             while (framesRead != 0);
@@ -70,5 +68,16 @@ public class DatasetBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void printHeader() {
+		for (int i = 0; i < this.frameCount; ++i) {
+			System.out.print(String.format("t[%d],", i));
+		}
+		System.out.println("class");
+	}
+	
+	public int frameCount() {
+		return this.frameCount;
 	}
 }
