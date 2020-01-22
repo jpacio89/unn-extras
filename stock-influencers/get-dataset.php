@@ -25,6 +25,18 @@
 
     // print_r($tradeMap);
     $rows = [];
+    $header = ['time'];
+
+    for ($j = 0; $j < count($users); ++$j) {
+        $user = $users[$j];
+        for ($k = 0; $k < count($intruments); ++$k) {
+            $instrument = $intruments[$k];
+            $header[] = "U$user@I$instrument";
+        }
+    }
+
+    $header[] = 'gains';
+    echo csvstr($header)."\n";
 
     for ($i = 0; $i < count($times); ++$i) {
         $time = $times[$i];
@@ -36,10 +48,15 @@
                 $instrument = $intruments[$k];
                 $isBuy = $tradeMap[$time][$user][$instrument]['IsBuy'];
                 if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
-                    $isBuy = 'N/A';
+                    $x = mt_rand(0,2);
+                    $isBuy = $x == 0 ? 'N/A' : 'Unknown';
                 }
                 $row[] = $isBuy;
             }
+        }
+
+        if (!$candles[$time] || !$candles[$time + 86400]) {
+            continue;
         }
 
         $price0 = $candles[$time]['High'];
