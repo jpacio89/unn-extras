@@ -1,7 +1,8 @@
 <?php
     $INST_COUNT = 1;
-    $USER_COUNT = 200;
-    $PROFIT_TIME_LINE = 86400;
+    $USER_COUNT = 50;
+    $PROFIT_TIME_LINE = 86400 * 7;
+    $INSTRUMENT_INDEX = 1;
 
     $json = file_get_contents('data/trades.json');
     $trades = json_decode($json, true);
@@ -13,11 +14,10 @@
     $users = get($trades, 'CID');
     $intruments = get($trades, 'InstrumentID');
     $times = get($trades, 'OpenDateTime');
+    $candles = getCandles($intruments[$INSTRUMENT_INDEX]);
 
     $users = array_slice($users, 0, $USER_COUNT);
-    $intruments = array_slice($intruments, 0, $INST_COUNT);
-
-    $candles = getCandles($intruments[0]);
+    $intruments = array_slice($intruments, $INSTRUMENT_INDEX, $INST_COUNT);
 
     // print_r($users);
     // print_r($intruments);
@@ -48,8 +48,9 @@
                 $instrument = $intruments[$k];
                 $isBuy = $tradeMap[$time][$user][$instrument]['IsBuy'];
                 if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
-                    $x = mt_rand(0,2);
-                    $isBuy = $x == 0 ? 'N/A' : 'Unknown';
+                    // $x = mt_rand(0,2);
+                    // $isBuy = $x == 0 ? 'N/A' : 'Unknown';
+                    $isBuy = '?';
                 }
                 $row[] = $isBuy;
             }
@@ -62,7 +63,15 @@
         $price0 = $candles[$time]['High'];
         $price1 = $candles[$time + $PROFIT_TIME_LINE]['Close'];
         $diff = round(($price1 - $price0) * 100 / $price0, 2);
-        $row[] = $diff;
+
+        if ($diff > 1) {
+            $row[] = 'UP';
+        } else if ($diff < -1) {
+            $row[] = 'DOWN';
+        } else {
+            $row[] = '-';
+        }
+        // $row[] = $diff;
 
         $rows[] = $row;
         echo csvstr($row)."\n";
@@ -88,9 +97,12 @@
 
     function groupTrades($trades) {
         $tradesMap = array();
+        $tradeCount = count($trades);
         for ($i = 0; $i < count($trades); ++$i) {
+            // echo "$i / $tradeCount\n";
             $trade = $trades[$i];
-            for ($time = $trade['OpenDateTime']; $time < $trade['CloseDateTime']; $i += 86400) {
+            for ($time = $trade['OpenDateTime']; $time < $trade['CloseDateTime']; $time += 86400) {
+                // echo "\t$time\n";
                 $tradesMap[$time][$trade['CID']][$trade['InstrumentID']] = $trade;
             }
         }
