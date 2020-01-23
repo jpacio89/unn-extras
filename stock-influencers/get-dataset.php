@@ -1,7 +1,7 @@
 <?php
-    ini_set('memory_limit','512M');
     $INST_COUNT = 1;
     $USER_COUNT = 200;
+    $PROFIT_TIME_LINE = 86400;
 
     $json = file_get_contents('data/trades.json');
     $trades = json_decode($json, true);
@@ -55,12 +55,12 @@
             }
         }
 
-        if (!$candles[$time] || !$candles[$time + 86400]) {
+        if (!$candles[$time] || !$candles[$time + $PROFIT_TIME_LINE]) {
             continue;
         }
 
         $price0 = $candles[$time]['High'];
-        $price1 = $candles[$time + 86400]['Close'];
+        $price1 = $candles[$time + $PROFIT_TIME_LINE]['Close'];
         $diff = round(($price1 - $price0) * 100 / $price0, 2);
         $row[] = $diff;
 
@@ -90,7 +90,9 @@
         $tradesMap = array();
         for ($i = 0; $i < count($trades); ++$i) {
             $trade = $trades[$i];
-            $tradesMap[$trade['OpenDateTime']/(1)][$trade['CID']][$trade['InstrumentID']] = $trade;
+            for ($time = $trade['OpenDateTime']; $time < $trade['CloseDateTime']; $i += 86400) {
+                $tradesMap[$time][$trade['CID']][$trade['InstrumentID']] = $trade;
+            }
         }
         return $tradesMap;
     }

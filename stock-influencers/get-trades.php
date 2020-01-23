@@ -29,22 +29,29 @@
 
         for ($i = 0; $i < count($json['PublicHistoryPositions']); ++$i) {
             $trade = $json['PublicHistoryPositions'][$i];
-            $unixTime = strtotime($trade['OpenDateTime']);
-            $date = new DateTime($trade['OpenDateTime']);
-            $date->setTime(0,0,0);
-            $time = $date->getTimestamp();
+            $openTime = getUnixTime($trade['OpenDateTime']);
+            $closeTime = getUnixTime($trade['CloseDateTime']);
             $trades[] = array(
 //                'Date' => $trade['OpenDateTime'],
-                'OpenDateTime' => $time,
+                'OpenDateTime' => $openTime,
+                'CloseDateTime' => $closeTime,                
                 'CID' => $trade['CID'],
                 'InstrumentID' => $trade['InstrumentID'],
                 'IsBuy' => $trade['IsBuy'] == '1' ? 'TRUE' : 'FALSE',
-                'OpenRate' => $trade['OpenRate']
+                'OpenRate' => $trade['OpenRate'],
+                'CloseRate' => $trade['CloseRate']
             );
         }
 
 //        print_r($trades);
         return $trades;
+    }
+
+    function getUnixTime($dateTime) {
+        $date = new DateTime($dateTime);
+        $date->setTime(0,0,0);
+        $time = $date->getTimestamp();
+        return $time;
     }
 
     function getInvestors() {
