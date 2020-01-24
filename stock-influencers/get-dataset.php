@@ -16,6 +16,8 @@
     $times = get($trades, 'OpenDateTime');
     $candles = getCandles($intruments[$INSTRUMENT_INDEX]);
 
+    // print_r($intruments[$INSTRUMENT_INDEX]);
+
     $users = array_slice($users, 0, $USER_COUNT);
     $intruments = array_slice($intruments, $INSTRUMENT_INDEX, $INST_COUNT);
 
@@ -56,11 +58,12 @@
             }
         }
 
+        // TODO: try nearby days because the selected day could be in the weekend
         if (!$candles[$time] || !$candles[$time + $PROFIT_TIME_LINE]) {
             continue;
         }
 
-        $price0 = $candles[$time]['High'];
+        $price0 = $candles[$time]['Close'];
         $price1 = $candles[$time + $PROFIT_TIME_LINE]['Close'];
         $diff = round(($price1 - $price0) * 100 / $price0, 2);
 
