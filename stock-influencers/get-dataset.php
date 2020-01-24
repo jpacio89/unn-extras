@@ -14,6 +14,8 @@
     $users = get($trades, 'CID');
     $intruments = get($trades, 'InstrumentID');
     $times = get($trades, 'OpenDateTime');
+    rsort($times);
+
     $candles = getCandles($intruments[$INSTRUMENT_INDEX]);
 
     // print_r($intruments[$INSTRUMENT_INDEX]);
