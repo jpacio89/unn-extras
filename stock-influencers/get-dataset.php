@@ -1,8 +1,8 @@
 <?php
-    $INST_COUNT = 1;
+    $INSTRUMENT_INDEX = 4;
     $USER_COUNT = 50;
-    $PROFIT_TIME_LINE = 86400 * 7;
-    $INSTRUMENT_INDEX = 1;
+    $PROFIT_TIME_LINE = 86400 * 30;
+    $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
     $trades = json_decode($json, true);
@@ -11,7 +11,10 @@
 
     // print_r($trades);
 
-    $users = get($trades, 'CID');
+    $users = getByInstrument($trades, 'CID', 100000);
+
+    // print_r($users);
+
     $intruments = get($trades, 'InstrumentID');
     $times = get($trades, 'OpenDateTime');
     rsort($times);
@@ -90,6 +93,23 @@
         for ($i = 0; $i < count($trades); ++$i) {
             $trade = $trades[$i];
             $vals[$trade[$selector]]++;
+        }
+
+        arsort($vals);
+        // print_r($vals);
+
+        $keys = array_keys($vals);
+
+        return $keys;
+    }
+
+    function getByInstrument($trades, $selector, $instrumentId) {
+        $vals = array();
+        for ($i = 0; $i < count($trades); ++$i) {
+            $trade = $trades[$i];
+            if ($trade['InstrumentID'] === $instrumentId) {
+                $vals[$trade[$selector]]++;
+            }
         }
 
         arsort($vals);

@@ -1,0 +1,12 @@
+{
+  "name": "etoro-cookie",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "chromedriver": "^79.0.0",
+    "geckodriver": "^1.19.1"
+  },
+  "devDependencies": {
+    "selenium-webdriver": "^4.0.0-alpha.5"
+  }
+}

@@ -17,11 +17,14 @@
         if ($feature === 'time') {
             $dateTime = gmdate("Y-m-d\TH:i:s\Z");
             $today = getUnixTime($dateTime);
-            $input[$feature] = $today;
+            //$input[$feature] = $today;
+            $input[$feature][$today] = true;
         } else if ($feature === 'gains') {
-            $input[$feature] = '-';
+            //$input[$feature] = '-';
+            $input[$feature]['-'] = true;
         } else {
-            $input[$feature] = checkPortfolio($cache, $feature, $i);
+            //$input[$feature] = checkPortfolio($cache, $feature, $i);
+            $input[$feature][checkPortfolio($cache, $feature, $i)] = true;
         }
         print_r($input);
         sleep(3);
