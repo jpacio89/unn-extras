@@ -1,8 +1,17 @@
 <?php
-    $INSTRUMENT_INDEX = 4;
-    $USER_COUNT = 50;
-    $PROFIT_TIME_LINE = 86400 * 30;
-    $INST_COUNT = 1;
+    // $INSTRUMENT_INDEX = 0;
+    // AUDUSD = 7
+    // Bitcoin = 100000
+    // AMD = 1832
+    // Google = 1002
+    // Apple = 1001
+    // USDJPY = 5
+    // USDCAD = 4
+    // Microsoft = 1004
+    $INSTRUMENT_ETORO_ID = 1004;
+    $USER_COUNT = 100;
+    $PROFIT_TIME_LINE = 86400 * 90;
+    // $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
     $trades = json_decode($json, true);
@@ -10,21 +19,22 @@
     $tradeMap = groupTrades($trades);
 
     // print_r($trades);
-
-    $users = getByInstrument($trades, 'CID', 100000);
+    $intruments = get($trades, 'InstrumentID');
+    $users = getByInstrument($trades, 'CID', $INSTRUMENT_ETORO_ID);
 
     // print_r($users);
 
-    $intruments = get($trades, 'InstrumentID');
     $times = get($trades, 'OpenDateTime');
     rsort($times);
 
-    $candles = getCandles($intruments[$INSTRUMENT_INDEX]);
+    //$candles = getCandles($intruments[$INSTRUMENT_INDEX]);
+    $candles = getCandles($INSTRUMENT_ETORO_ID);
 
-    // print_r($intruments[$INSTRUMENT_INDEX]);
+    //print_r($intruments[$INSTRUMENT_INDEX]);
 
     $users = array_slice($users, 0, $USER_COUNT);
-    $intruments = array_slice($intruments, $INSTRUMENT_INDEX, $INST_COUNT);
+    //$intruments = array_slice($intruments, $INSTRUMENT_INDEX, $INST_COUNT);
+    $intruments = [$INSTRUMENT_ETORO_ID];
 
     // print_r($users);
     // print_r($intruments);

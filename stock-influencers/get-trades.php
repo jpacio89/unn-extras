@@ -78,7 +78,7 @@
         $investors = [];
 
         //$json = file_get_contents('https://www.etoro.com/sapi/rankings/rankings/?activeweeksmin=40&blocked=false&bonusonly=false&client_request_id=cd8928c2-7fc8-4291-913f-0633e12c32bf&copyblock=false&copyinvestmentpctmax=5&copytradespctmax=5&dailyddmin=-7&gainmax=80&gainmin=5&hasavatar=true&istestaccount=false&lastactivitymax=31&maxmonthlyriskscoremax=4&maxmonthlyriskscoremin=1&optin=true&page=1&pagesize=200&period=OneYearAgo&profitablemonthspctmin=55&profitableweekspctmin=55&sort=-weeklydd&tradesmin=25&verified=true&weeklyddmin=-14');
-        $json = file_get_contents('https://www.etoro.com/sapi/rankings/rankings/?activeweeksmax=78&activeweeksmin=52&blocked=false&bonusonly=false&client_request_id=a1644c51-8eed-4c8d-ae1c-a205f047fdc5&copyblock=false&istestaccount=false&optin=true&page=1&pagesize=100&period=LastTwoYears&sort=-weeklydd&tradesmin=100');
+        $json = file_get_contents('https://www.etoro.com/sapi/rankings/rankings/?blocked=false&bonusonly=false&client_request_id=35bd969d-650e-40a1-b082-9970109dc318&copyblock=false&istestaccount=false&lastactivitymax=30&optin=true&page=1&pagesize=100&period=OneYearAgo&sort=-gain&tradesmin=500&verified=true');
 
         $json = json_decode($json, true);
 

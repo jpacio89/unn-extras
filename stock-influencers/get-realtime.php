@@ -1,6 +1,6 @@
 <?php
 
-    $datasetPath = 'etoro-bitcoin.csv';
+    $datasetPath = 'etoro.csv';
     $header = fgets(fopen($datasetPath, 'r'));
     $header = trim(preg_replace('/\s\s+/', ' ', $header));
 
