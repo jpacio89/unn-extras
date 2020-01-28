@@ -1,4 +1,6 @@
 <?php
+    ini_set('memory_limit', '2048M');
+
     // $INSTRUMENT_INDEX = 0;
     // AUDUSD = 7
     // Bitcoin = 100000
@@ -8,9 +10,9 @@
     // USDJPY = 5
     // USDCAD = 4
     // Microsoft = 1004
-    $INSTRUMENT_ETORO_ID = 1004;
+    $INSTRUMENT_ETORO_ID = 4;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 90;
+    $PROFIT_TIME_LINE = 86400 * 30;
     // $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
@@ -57,6 +59,9 @@
 
     for ($i = 0; $i < count($times); ++$i) {
         $time = $times[$i];
+        if ($time < time() - 86400 * 365) {
+            continue;
+        }
         $row = [$time];
         for ($j = 0; $j < count($users); ++$j) {
             $user = $users[$j];
