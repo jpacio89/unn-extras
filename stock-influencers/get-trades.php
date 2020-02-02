@@ -8,7 +8,7 @@
         echo "$i / $investorCount\n";
         $localTrades = getTrades($investors[$i], $i);
         $trades = array_merge($trades, $localTrades);
-        sleep(30);
+        sleep(3);
     }
 
     print_r($trades);
@@ -19,26 +19,15 @@
         global $cookie;
         $trades = [];
 
-        /*$cookies = @shell_exec("curl --silent --output /dev/null --cookie-jar - 'https://www.etoro.com/people/olivierdanvel/portfolio/history'");
-        $cookies = extractCookies($cookies);
-        $cook = [];
-        for($i = 0; $i < count($cookies); ++$i) {
-            $cook[] = $cookies[$i]['name']."=".$cookies[$i]['value'];
-        }
-        $cookie = implode('; ', $cook);*/
-        /*if ($curlIndex % 10 === 0) {
-            $cookie = @shell_exec('node get-etoro-cookie.js');
-        }*/
-
-        //echo $cookie."\n";
         include "curls.php";
-        // print_r($cookies);
+
+        // echo "> " . $requests[$curlIndex % count($requests)];
 
         $output = @shell_exec($requests[$curlIndex % count($requests)]);
 
-        $parts = explode('var model = ', $output);
-        $parts = explode("txt =", $parts[1]);
-        $output = substr(trim($parts[0]), 0, -1);
+        //$parts = explode('var model = ', $output);
+        //$parts = explode("txt =", $parts[1]);
+        //$output = substr(trim($parts[0]), 0, -1);
 
         $json = @json_decode($output, true);
 
