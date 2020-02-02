@@ -10,7 +10,13 @@
     // USDJPY = 5
     // USDCAD = 4
     // Microsoft = 1004
-    $INSTRUMENT_ETORO_ID = 1001;
+    // Amazon = 1005
+    // Oil = 17
+    // Gold = 18
+    // Wheat = 97
+    // EURUSD = 1
+    // GER30 = 32
+    $INSTRUMENT_ETORO_ID = 32;
     $USER_COUNT = 100;
     $PROFIT_TIME_LINE = 86400 * 7;
     // $INST_COUNT = 1;
