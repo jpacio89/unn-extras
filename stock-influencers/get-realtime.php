@@ -1,5 +1,4 @@
 <?php
-
     $datasetPath = 'etoro.csv';
     $header = fgets(fopen($datasetPath, 'r'));
     $header = trim(preg_replace('/\s\s+/', ' ', $header));
@@ -26,7 +25,7 @@
             //$input[$feature] = checkPortfolio($cache, $feature, $i);
             $input[$feature][checkPortfolio($cache, $feature, $i)] = true;
         }
-        print_r($input);
+        //print_r($input);
         sleep(3);
     }
 

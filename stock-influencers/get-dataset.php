@@ -10,9 +10,9 @@
     // USDJPY = 5
     // USDCAD = 4
     // Microsoft = 1004
-    $INSTRUMENT_ETORO_ID = 4;
+    $INSTRUMENT_ETORO_ID = 1001;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 30;
+    $PROFIT_TIME_LINE = 86400 * 7;
     // $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
