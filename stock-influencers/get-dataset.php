@@ -40,9 +40,21 @@
     // Netflix = 1127
     // CISCO = 1013
     // AutoDesk = 1134
-    $INSTRUMENT_ETORO_ID = 19;
+    // Walt Disney = 1016
+    // Uber = 1186
+    // Ericsson = 2231
+    // Facebook = 1003
+    // JPMorgan = 1023
+    // Nike = 1042
+    // Oracle = 1135
+    // 3M = 1026
+    // GE = 1017
+    // Snap = 1979
+    // Coca-cola = 1024
+    // EURCAD = 13
+    $INSTRUMENT_ETORO_ID = 2;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 56;
+    $PROFIT_TIME_LINE = 86400 * 28;
     // $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
