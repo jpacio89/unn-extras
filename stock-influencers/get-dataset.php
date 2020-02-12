@@ -55,39 +55,20 @@
     // EURGBP = 8
     // EURCHF = 9
     // NZDUSD = 3
-    $INSTRUMENT_ETORO_ID = 3;
+    $INSTRUMENT_ETORO_ID = 100000;
     $USER_COUNT = 100;
     $PROFIT_TIME_LINE = 86400 * 14;
-    // $INST_COUNT = 1;
 
-    $json = file_get_contents('data/trades.json');
-    $trades = json_decode($json, true);
+    $summary = file_get_contents('data/trades.summary.json');
+    $summary = json_decode($summary, true);
 
-    $tradeMap = groupTrades($trades);
-
-    // print_r($trades);
-    $intruments = get($trades, 'InstrumentID');
-    $users = getByInstrument($trades, 'CID', $INSTRUMENT_ETORO_ID);
-
-    // print_r($users);
-
-    $times = get($trades, 'OpenDateTime');
-    rsort($times);
-
-    //$candles = getCandles($intruments[$INSTRUMENT_INDEX]);
-    $candles = getCandles($INSTRUMENT_ETORO_ID);
-
-    //print_r($intruments[$INSTRUMENT_INDEX]);
-
+    $users = getByInstrument($summary, $INSTRUMENT_ETORO_ID);
     $users = array_slice($users, 0, $USER_COUNT);
-    //$intruments = array_slice($intruments, $INSTRUMENT_INDEX, $INST_COUNT);
+//    print_r($users);
+
+    $candles = getCandles($INSTRUMENT_ETORO_ID);
     $intruments = [$INSTRUMENT_ETORO_ID];
 
-    // print_r($users);
-    // print_r($intruments);
-    // print_r($times);
-
-    // print_r($tradeMap);
     $rows = [];
     $header = ['time'];
 
@@ -102,21 +83,24 @@
     $header[] = 'gains';
     echo csvstr($header)."\n";
 
-    for ($i = 0; $i < count($times); ++$i) {
-        $time = $times[$i];
-        if ($time < time() - 86400 * 365) {
-            continue;
-        }
+    $today = strtotime('today midnight');
+    $startTime = $today - 86400 * 365;
+
+    for ($i = $startTime; $i < $today; $i += 86400) {
+        $time = $i;
         $row = [$time];
+
         for ($j = 0; $j < count($users); ++$j) {
             $user = $users[$j];
+            $trades = file_get_contents('data/trades-'.$user.'.investor.json');
+            $trades = json_decode($trades, true);
+            $tradeMap = groupTrades($trades);
+
             for ($k = 0; $k < count($intruments); ++$k) {
                 // echo $user;
                 $instrument = $intruments[$k];
                 $isBuy = $tradeMap[$time][$user][$instrument]['IsBuy'];
                 if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
-                    // $x = mt_rand(0,2);
-                    // $isBuy = $x == 0 ? 'N/A' : 'Unknown';
                     $isBuy = '?';
                 }
                 $row[] = $isBuy;
@@ -163,21 +147,17 @@
         return $keys;
     }
 
-    function getByInstrument($trades, $selector, $instrumentId) {
-        $vals = array();
-        for ($i = 0; $i < count($trades); ++$i) {
-            $trade = $trades[$i];
-            if ($trade['InstrumentID'] === $instrumentId) {
-                $vals[$trade[$selector]]++;
-            }
-        }
+    function getByInstrument($summary, $instrumentId) {
+        usort($summary, function($a, $b) use ($instrumentId) {
+            return $b['counts'][$instrumentId] - $a['counts'][$instrumentId];
+        });
 
-        arsort($vals);
-        // print_r($vals);
+        $sortedUsers = array_map(function($entry) use ($instrumentId) {
+            return $entry['investor'];
+            //return [$entry['investor'], $entry['counts'][$instrumentId]];
+        }, $summary);
 
-        $keys = array_keys($vals);
-
-        return $keys;
+        return $sortedUsers;
     }
 
     function groupTrades($trades) {

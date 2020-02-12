@@ -9,7 +9,10 @@
         $investor = $investors[$i];
         $investorId = $investor['CustomerId'];
         $trades = getTrades($investor, $i);
-        $summary[$investorId] = getSummary($trades);
+        $summary[] = array(
+            "investor" => $investorId,
+            "counts"   => getSummary($trades)
+        );
         print_r($trades);
         file_put_contents('data/trades-'.$investorId.'.investor.json', json_encode($trades));
         file_put_contents('data/trades.summary.json', json_encode($summary));
