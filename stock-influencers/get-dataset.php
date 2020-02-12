@@ -52,9 +52,12 @@
     // Snap = 1979
     // Coca-cola = 1024
     // EURCAD = 13
-    $INSTRUMENT_ETORO_ID = 2;
+    // EURGBP = 8
+    // EURCHF = 9
+    // NZDUSD = 3
+    $INSTRUMENT_ETORO_ID = 3;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 28;
+    $PROFIT_TIME_LINE = 86400 * 14;
     // $INST_COUNT = 1;
 
     $json = file_get_contents('data/trades.json');
