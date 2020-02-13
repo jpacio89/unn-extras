@@ -85,17 +85,15 @@
 
     $today = strtotime('today midnight');
     $startTime = $today - 86400 * 365;
+    $cache = array();
 
-    for ($i = $startTime; $i < $today; $i += 86400) {
-        $time = $i;
-        $row = [$time];
-
-        for ($j = 0; $j < count($users); ++$j) {
-            $user = $users[$j];
-            $trades = file_get_contents('data/trades-'.$user.'.investor.json');
-            $trades = json_decode($trades, true);
-            $tradeMap = groupTrades($trades);
-
+    for ($j = 0; $j < count($users); ++$j) {
+        $user = $users[$j];
+        $trades = file_get_contents('data/trades-'.$user.'.investor.json');
+        $trades = json_decode($trades, true);
+        $tradeMap = groupTrades($trades);
+        for ($i = $startTime; $i < $today; $i += 86400) {
+            $time = $i;
             for ($k = 0; $k < count($intruments); ++$k) {
                 // echo $user;
                 $instrument = $intruments[$k];
@@ -103,6 +101,19 @@
                 if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
                     $isBuy = '?';
                 }
+                $cache[$user][$time] = $isBuy;
+            }
+        }
+    }
+
+    for ($i = $startTime; $i < $today; $i += 86400) {
+        $time = $i;
+        $row = [$time];
+
+        for ($j = 0; $j < count($users); ++$j) {
+            $user = $users[$j];
+            for ($k = 0; $k < count($intruments); ++$k) {
+                $isBuy = $cache[$user][$time];
                 $row[] = $isBuy;
             }
         }
