@@ -4,7 +4,6 @@
     for ($page = 1; $page < 5; ++$page) {
         $investors = getInvestors($page);
         $investorCount = count($investors);
-        // $summary = array();
 
         for ($i = 0; $i < $investorCount; ++$i) {
             echo "$page -> $i / $investorCount\n";
@@ -18,7 +17,7 @@
             // print_r($trades);
             file_put_contents('data/trades-'.$investorId.'.investor.json', json_encode($trades));
             file_put_contents('data/trades.summary.json', json_encode($summary));
-            sleep(3);
+            sleep(10);
         }
     }
 
@@ -49,7 +48,7 @@
         $json = @json_decode($output, true);
 
         if (!isset($json['PublicHistoryPositions'])) {
-            echo "[WARNING] Empty trades @User = $user: $output\n";
+            echo "[WARNING] Empty trades @User = ". $user['CustomerId'] .": $output\n";
             return $trades;
         }
 
@@ -89,7 +88,8 @@
         $json = json_decode($json, true);
 
         if (!isset($json['Items'])) {
-            return $investors;
+            echo "[WARNING] Empty investors\n";
+            return [];
         }
 
         for ($i = 0; $i < count($json['Items']); ++$i) {
