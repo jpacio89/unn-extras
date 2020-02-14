@@ -1,35 +1,68 @@
 <?php
-    $summary = file_get_contents('data/trades.summary.json');
-    $summary = json_decode($summary, true);
 
-    $investorIds = array_map(function($entry) {
-        return $entry['investor'];
-    }, $summary);
-    $investorCount = count($investorIds);
+    $features = file_get_contents('http://localhost:7000/session/features/1');
+    $features = json_decode($features, true);
+    print_r($features);
 
-    for ($i = 0; $i < $investorCount; ++$i) {
-        $investorId = $investorIds[$i];
-        $portfolio = getPortfolio($investorId, $i);
-        if (!isset($portfolio['AggregatedPositions'])) {
-            echo "$i / $investorCount -> Portfolio: $investorId\n";
-            echo "|Warning| Invalid response from server...\n";
-            continue;
+    $cache = array();
+    $input = array();
+    $featureCount = count($features);
+
+    for ($i = 0; $i < $featureCount; ++$i) {
+        $feature = $features[$i];
+
+        echo "$i / $featureCount -> $feature\n";
+
+        if ($feature === 'time') {
+            $dateTime = gmdate("Y-m-d\TH:i:s\Z");
+            $today = getUnixTime($dateTime);
+            //$input[$feature] = $today;
+            $input[$feature][$today] = true;
+        } else if ($feature === 'gains') {
+            //$input[$feature] = '-';
+            $input[$feature]['-'] = true;
+        } else {
+            //$input[$feature] = checkPortfolio($cache, $feature, $i);
+            $input[$feature][checkPortfolio($cache, $feature, $i)] = true;
         }
-        $tradeCount = count($portfolio['AggregatedPositions']);
-        echo "$i / $investorCount -> Portfolio: $investorId, Trades: $tradeCount\n";
-        $wrapper = array(
-            'created_time' => time(),
-            'data' => $portfolio
-        );
-
-        file_put_contents('data/portfolio-'.$investorId.'.investor.json', json_encode($wrapper));
-        sleep(3);
+        //print_r($input);
     }
 
-    function getPortfolio($userId, $curlIndex) {
-        include "curls_realtime.php";
-        $json = shell_exec($requests[$curlIndex % count($requests)]);
-        $actions = json_decode($json, true);
-        return $actions;
+    echo json_encode($input);
+
+    function checkPortfolio(&$cache, $feature, $curlIndex) {
+        $parts = explode('@', $feature);
+        $userId = str_replace('U', '', $parts[0]);
+        $instrumentId = str_replace('I', '', $parts[1]);
+
+        echo "$userId -> $instrumentId\n";
+        //print_r($cache);
+
+        if (isset($cache[$userId])) {
+            return getAction($cache[$userId], $instrumentId);
+        }
+
+        $portfolio = file_get_contents('data/portfolio-'.$userId.'.investor.json');
+        $portfolio = json_decode($portfolio, true);
+        $cache[$userId] = $portfolio['data'];
+        return getAction($cache[$userId], $instrumentId);
+    }
+
+    function getAction($actions, $instrumentId) {
+        $filtered = array_filter($actions['AggregatedPositions'], function($v, $k) use($instrumentId) {
+            return $v['InstrumentID'] == $instrumentId;
+        }, ARRAY_FILTER_USE_BOTH);
+        $filtered = array_values($filtered);
+        if (count($filtered) > 0) {
+            return $filtered[0]['Direction'] == 'Buy' ? 'TRUE' : 'FALSE';
+        }
+        return '?';
+    }
+
+    function getUnixTime($dateTime) {
+        $date = new DateTime($dateTime);
+        $date->setTime(0,0,0);
+        $time = $date->getTimestamp();
+        return $time;
     }
 ?>
