@@ -13,6 +13,7 @@
         if (!isset($portfolio['AggregatedPositions'])) {
             echo "$i / $investorCount -> Portfolio: $investorId\n";
             echo "|Warning| Invalid response from server...\n";
+            sleep(10);
             continue;
         }
         $tradeCount = count($portfolio['AggregatedPositions']);
@@ -23,7 +24,7 @@
         );
 
         file_put_contents('data/portfolio-'.$investorId.'.investor.json', json_encode($wrapper));
-        sleep(3);
+        sleep(10);
     }
 
     function getPortfolio($userId, $curlIndex) {
