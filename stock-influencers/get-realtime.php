@@ -2,7 +2,7 @@
 
     $features = file_get_contents('http://localhost:7000/session/features/1');
     $features = json_decode($features, true);
-    print_r($features);
+    // print_r($features);
 
     $cache = array();
     $input = array();
@@ -11,7 +11,7 @@
     for ($i = 0; $i < $featureCount; ++$i) {
         $feature = $features[$i];
 
-        echo "$i / $featureCount -> $feature\n";
+        // echo "$i / $featureCount -> $feature\n";
 
         if ($feature === 'time') {
             $dateTime = gmdate("Y-m-d\TH:i:s\Z");
@@ -23,7 +23,11 @@
             $input[$feature]['-'] = true;
         } else {
             //$input[$feature] = checkPortfolio($cache, $feature, $i);
-            $input[$feature][checkPortfolio($cache, $feature, $i)] = true;
+            $v = checkPortfolio($cache, $feature, $i);
+            if ($v === FALSE) {
+                $v = '?';
+            }
+            $input[$feature][$v] = true;
         }
         //print_r($input);
     }
@@ -35,15 +39,20 @@
         $userId = str_replace('U', '', $parts[0]);
         $instrumentId = str_replace('I', '', $parts[1]);
 
-        echo "$userId -> $instrumentId\n";
+        //echo "$userId -> $instrumentId\n";
         //print_r($cache);
 
         if (isset($cache[$userId])) {
             return getAction($cache[$userId], $instrumentId);
         }
 
-        $portfolio = file_get_contents('data/portfolio-'.$userId.'.investor.json');
+        $portfolio = @file_get_contents('data/portfolio-'.$userId.'.investor.json');
         $portfolio = json_decode($portfolio, true);
+
+        if (!isset($portfolio['data'])) {
+            return false;
+        }
+
         $cache[$userId] = $portfolio['data'];
         return getAction($cache[$userId], $instrumentId);
     }

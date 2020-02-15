@@ -55,7 +55,9 @@
     // EURGBP = 8
     // EURCHF = 9
     // NZDUSD = 3
-    $INSTRUMENT_ETORO_ID = 1024;
+    // IOTA = 100018
+    // EOS = 100022
+    $INSTRUMENT_ETORO_ID = 100022;
     $USER_COUNT = 100;
     $PROFIT_TIME_LINE = 86400 * 14;
 
