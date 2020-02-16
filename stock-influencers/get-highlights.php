@@ -1,13 +1,13 @@
 <?php
     $host = 'http://localhost:7000';
-    $timeWindows = array(14, 28);
+    $timeWindows = array(7, 14, 28);
     $sessions = array(
-        "eos-i100022"
+        "bitcoin-i100000"
     );
 
     for ($i = 0; $i < count($sessions); ++$i) {
         for($j = 0; $j < count($timeWindows); ++$j) {
-            $session = $sessions[$i].'-'.$timeWindows[$j].'d-v2';
+            $session = "{$sessions[$i]}-{$timeWindows[$j]}d";
             loadSession($session);
             $input = getRealtimePortfolios();
             $prediction = getPrediction($input);
