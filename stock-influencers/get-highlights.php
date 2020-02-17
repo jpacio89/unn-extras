@@ -7,7 +7,9 @@
         "bcash-i100002",
         "ripple-i100003",
         "bitcoin-i100000",
-        "litecoin-i100005"
+        "litecoin-i100005",
+        "gold-i18",
+        "usa500-i27"
     );
 
     for ($i = 0; $i < count($sessions); ++$i) {

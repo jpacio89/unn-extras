@@ -12,11 +12,9 @@
     // Microsoft = 1004
     // Amazon = 1005
     // Oil = 17
-    // Gold = 18
     // Wheat = 97
     // EURUSD = 1
     // GER30 = 32
-    // SPX500 = 27
     // Tesla = 1111
     // GBPUSD = 2
     // Natural Gas = 22
@@ -55,12 +53,15 @@
     // EURGBP = 8
     // EURCHF = 9
     // NZDUSD = 3
+
+    // Gold = 18
+    // SPX500 = 27
     // IOTA = 100018
     // EOS = 100022
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 100022;
+    $INSTRUMENT_ETORO_ID = 27;
     $USER_COUNT = 100;
     $PROFIT_TIME_LINE = 86400 * 28;
 
