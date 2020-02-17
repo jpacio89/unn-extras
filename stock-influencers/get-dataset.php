@@ -85,10 +85,13 @@
         }
     }
 
-    /*$header[] = 'hilo3';
+    /*$header[] = 'hilo1';
+    $header[] = 'hilo3';
     $header[] = 'hilo7';
     $header[] = 'hilo14';
-    $header[] = 'hilo28';*/
+    $header[] = 'hilo21';
+    $header[] = 'hilo28';
+    $header[] = 'hilo56';*/
     $header[] = 'gains';
     echo csvstr($header)."\n";
 
@@ -132,19 +135,31 @@
             continue;
         }
 
-        /*$hilo3 = getHiLo($candles, $time, 3);
+        /*$hilo1 = getHiLo($candles, $time, 1);
+        $hilo3 = getHiLo($candles, $time, 3);
         $hilo7 = getHiLo($candles, $time, 7);
         $hilo14 = getHiLo($candles, $time, 14);
+        $hilo21 = getHiLo($candles, $time, 21);
         $hilo28 = getHiLo($candles, $time, 28);
+        $hilo56 = getHiLo($candles, $time, 56);
 
-        if ($hilo3 === FALSE || $hilo7 === FALSE || $hilo14 === FALSE || $hilo28 === FALSE) {
+        if ($hilo1 === FALSE ||
+            $hilo3 === FALSE ||
+            $hilo7 === FALSE ||
+            $hilo14 === FALSE ||
+            $hilo21 === FALSE ||
+            $hilo28 === FALSE ||
+            $hilo56 === FALSE) {
             continue;
         }
 
+        $row[] = $hilo1;
         $row[] = $hilo3;
         $row[] = $hilo7;
         $row[] = $hilo14;
-        $row[] = $hilo28;*/
+        $row[] = $hilo21;
+        $row[] = $hilo28;
+        $row[] = $hilo56;*/
 
         $price0 = $candles[$time]['Close'];
         $price1 = $candles[$time + $PROFIT_TIME_LINE]['Close'];
