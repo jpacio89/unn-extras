@@ -2,7 +2,12 @@
     $host = 'http://localhost:7000';
     $timeWindows = array(7, 14, 28);
     $sessions = array(
-        "bitcoin-i100000"
+        "iota-i100018",
+        "eos-i100022",
+        "bcash-i100002",
+        "ripple-i100003",
+        "bitcoin-i100000",
+        "litecoin-i100005"
     );
 
     for ($i = 0; $i < count($sessions); ++$i) {

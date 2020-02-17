@@ -60,9 +60,9 @@
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 100000;
+    $INSTRUMENT_ETORO_ID = 100022;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 14;
+    $PROFIT_TIME_LINE = 86400 * 28;
 
     $summary = file_get_contents('data/trades.summary.json');
     $summary = json_decode($summary, true);
