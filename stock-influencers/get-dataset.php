@@ -62,7 +62,7 @@
     // Litecoin = 100005
     $INSTRUMENT_ETORO_ID = 100000;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 28;
+    $PROFIT_TIME_LINE = 86400 * 14;
 
     $summary = file_get_contents('data/trades.summary.json');
     $summary = json_decode($summary, true);
@@ -85,6 +85,10 @@
         }
     }
 
+    /*$header[] = 'hilo3';
+    $header[] = 'hilo7';
+    $header[] = 'hilo14';
+    $header[] = 'hilo28';*/
     $header[] = 'gains';
     echo csvstr($header)."\n";
 
@@ -128,6 +132,20 @@
             continue;
         }
 
+        /*$hilo3 = getHiLo($candles, $time, 3);
+        $hilo7 = getHiLo($candles, $time, 7);
+        $hilo14 = getHiLo($candles, $time, 14);
+        $hilo28 = getHiLo($candles, $time, 28);
+
+        if ($hilo3 === FALSE || $hilo7 === FALSE || $hilo14 === FALSE || $hilo28 === FALSE) {
+            continue;
+        }
+
+        $row[] = $hilo3;
+        $row[] = $hilo7;
+        $row[] = $hilo14;
+        $row[] = $hilo28;*/
+
         $price0 = $candles[$time]['Close'];
         $price1 = $candles[$time + $PROFIT_TIME_LINE]['Close'];
         $diff = round(($price1 - $price0) * 100 / $price0, 2);
@@ -146,6 +164,24 @@
     }
 
     // print_r($rows);
+
+    function getHiLo($candles, $pivotTime, $window) {
+        $maxHigh = 0;
+        $minLow  = 1000000000;
+        for ($i = 0; $i < $window; $i++) {
+            $time = $pivotTime - $i * 86400 - 86400;
+            if (!isset($candles[$time])) {
+                return FALSE;
+            }
+            $maxHigh = max($maxHigh, $candles[$time]['High']);
+            $minLow = min($minLow, $candles[$time]['Low']);
+            // print_r($candles);
+        }
+        $diff = $candles[$time]['Close'] - $minLow;
+        $perc = round($diff * 100 / ($maxHigh - $minLow), 0);
+        // echo "$maxHigh $minLow $diff $perc\n";
+        return $perc;
+    }
 
 
     function get($trades, $selector) {
@@ -212,8 +248,7 @@
             $fromDateUnix = strtotime($candle['FromDate']);
             $priceMap[$fromDateUnix] = $candle;
         }
-
-//        print_r($priceMap);
+        // print_r($priceMap);
         return $priceMap;
     }
 ?>
