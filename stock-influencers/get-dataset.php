@@ -11,7 +11,6 @@
     // USDCAD = 4
     // Microsoft = 1004
     // Amazon = 1005
-    // Oil = 17
     // Wheat = 97
     // EURUSD = 1
     // GER30 = 32
@@ -27,9 +26,7 @@
     // ESP35 = 34
     // FRA40 = 31
     // UK100 = 30
-    // NASDAQ 100 = 28
     // JPN225 = 36
-    // EU50 = 43
     // HKG50 = 38
     // DJ30 = 29
     // Dollar = 25
@@ -54,6 +51,9 @@
     // EURCHF = 9
     // NZDUSD = 3
 
+    // NASDAQ 100 = 28
+    // EU50 = 43
+    // Oil = 17
     // Gold = 18
     // SPX500 = 27
     // IOTA = 100018
@@ -61,7 +61,7 @@
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 27;
+    $INSTRUMENT_ETORO_ID = 28;
     $USER_COUNT = 100;
     $PROFIT_TIME_LINE = 86400 * 28;
 

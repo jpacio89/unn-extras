@@ -9,7 +9,10 @@
         "bitcoin-i100000",
         "litecoin-i100005",
         "gold-i18",
-        "usa500-i27"
+        "usa500-i27",
+        "oil-i17",
+        "eu50-i43",
+        "nasdaq100-i28"
     );
 
     for ($i = 0; $i < count($sessions); ++$i) {
