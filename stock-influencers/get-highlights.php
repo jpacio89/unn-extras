@@ -12,7 +12,10 @@
         "usa500-i27",
         "oil-i17",
         "eu50-i43",
-        "nasdaq100-i28"
+        "nasdaq100-i28",
+        "netflix-i1127",
+        "germany30-i32",
+        "google-i1002"
     );
 
     for ($i = 0; $i < count($sessions); ++$i) {

@@ -5,15 +5,12 @@
     // AUDUSD = 7
     // Bitcoin = 100000
     // AMD = 1832
-    // Google = 1002
     // Apple = 1001
     // USDJPY = 5
     // USDCAD = 4
     // Microsoft = 1004
     // Amazon = 1005
     // Wheat = 97
-    // EURUSD = 1
-    // GER30 = 32
     // Tesla = 1111
     // GBPUSD = 2
     // Natural Gas = 22
@@ -28,11 +25,9 @@
     // UK100 = 30
     // JPN225 = 36
     // HKG50 = 38
-    // DJ30 = 29
     // Dollar = 25
     // AUS 200 = 33
     // silver = 19
-    // Netflix = 1127
     // CISCO = 1013
     // AutoDesk = 1134
     // Walt Disney = 1016
@@ -51,6 +46,11 @@
     // EURCHF = 9
     // NZDUSD = 3
 
+    // DJ30 = 29
+    // EURUSD = 1
+    // Google = 1002
+    // GER30 = 32
+    // Netflix = 1127
     // NASDAQ 100 = 28
     // EU50 = 43
     // Oil = 17
@@ -61,9 +61,9 @@
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 28;
+    $INSTRUMENT_ETORO_ID = 29;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 28;
+    $PROFIT_TIME_LINE = 86400 * 62;
 
     $summary = file_get_contents('data/trades.summary.json');
     $summary = json_decode($summary, true);
