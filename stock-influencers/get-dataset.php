@@ -35,7 +35,6 @@
     // Ericsson = 2231
     // Facebook = 1003
     // JPMorgan = 1023
-    // Nike = 1042
     // Oracle = 1135
     // 3M = 1026
     // GE = 1017
@@ -46,6 +45,7 @@
     // EURCHF = 9
     // NZDUSD = 3
 
+    // Nike = 1042
     // DJ30 = 29
     // EURUSD = 1
     // Google = 1002
@@ -61,9 +61,14 @@
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 29;
+    $INSTRUMENT_ETORO_ID = 43;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 62;
+    $PROFIT_TIME_LINE = 86400 * 56;
+
+    if ($argc === 3) {
+        $INSTRUMENT_ETORO_ID = $argv[1];
+        $PROFIT_TIME_LINE = 86400 * $argv[2];
+    }
 
     $summary = file_get_contents('data/trades.summary.json');
     $summary = json_decode($summary, true);

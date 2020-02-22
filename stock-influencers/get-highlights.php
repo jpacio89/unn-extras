@@ -1,6 +1,6 @@
 <?php
     $host = 'http://localhost:7000';
-    $timeWindows = array(7, 14, 28);
+    $timeWindows = array(7, 14, 28, 56);
     $sessions = array(
         "iota-i100018",
         "eos-i100022",
@@ -24,6 +24,9 @@
             loadSession($session);
             $input = getRealtimePortfolios();
             $prediction = getPrediction($input);
+            if ($prediction['status'] === 500) {
+                continue;
+            }
             echo $session . ' -> ' . json_encode($prediction) . "\n";
         }
     }
