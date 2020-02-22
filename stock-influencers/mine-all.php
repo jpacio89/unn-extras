@@ -1,8 +1,12 @@
 <?php
     $host = 'http://localhost:7000';
-    $timeWindows = array(1, 3, 7, 14, 28, 56);
-
-    for ($instrumentId = 1; $instrumentId < 30; ++$instrumentId) {
+    $timeWindows = array(3, 14, 28, 56);
+    // [1, 73]
+    // [91, 101]
+    // [1001, 1056]
+    // [1100, 1149]
+    // [1200, 1388]
+    for ($instrumentId = 1; $instrumentId <= 73; ++$instrumentId) {
         for ($j = 0; $j < count($timeWindows); ++$j) {
             $timeWindow = $timeWindows[$j];
             $name = "i{$instrumentId}-{$timeWindow}d";

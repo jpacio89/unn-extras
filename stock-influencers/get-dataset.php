@@ -63,7 +63,7 @@
     // Litecoin = 100005
     $INSTRUMENT_ETORO_ID = 43;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 56;
+    $PROFIT_TIME_LINE = 86400 * 14;
 
     if ($argc === 3) {
         $INSTRUMENT_ETORO_ID = $argv[1];
@@ -83,8 +83,42 @@
     $rows = [];
     $header = ['time'];
 
+    $today = strtotime('today midnight');
+    $startTime = $today - 86400 * 365;
+    $cache = array();
+    $valueMap = array();
+
     for ($j = 0; $j < count($users); ++$j) {
         $user = $users[$j];
+        $trades = file_get_contents('data/trades-'.$user.'.investor.json');
+        $trades = json_decode($trades, true);
+        $tradeMap = groupTrades($trades);
+        for ($i = $startTime; $i < $today; $i += 86400) {
+            $time = $i;
+            if (!$candles[$time] || !$candles[$time + $PROFIT_TIME_LINE]) {
+                continue;
+            }
+            for ($k = 0; $k < count($intruments); ++$k) {
+                // echo $user;
+                $instrument = $intruments[$k];
+                $isBuy = $tradeMap[$time][$user][$instrument]['IsBuy'];
+                if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
+                    $isBuy = '?';
+                }
+                $cache[$user][$time] = $isBuy;
+                $valueMap[$user][$isBuy] = true;
+            }
+        }
+    }
+
+    // print_r($valueMap);
+
+    for ($j = 0; $j < count($users); ++$j) {
+        $user = $users[$j];
+        if (count(array_keys($valueMap[$user])) < 2) {
+            //echo "Discarding user... $user\n";
+            continue;
+        }
         for ($k = 0; $k < count($intruments); ++$k) {
             $instrument = $intruments[$k];
             $header[] = "U$user@I$instrument";
@@ -101,44 +135,24 @@
     $header[] = 'gains';
     echo csvstr($header)."\n";
 
-    $today = strtotime('today midnight');
-    $startTime = $today - 86400 * 365;
-    $cache = array();
-
-    for ($j = 0; $j < count($users); ++$j) {
-        $user = $users[$j];
-        $trades = file_get_contents('data/trades-'.$user.'.investor.json');
-        $trades = json_decode($trades, true);
-        $tradeMap = groupTrades($trades);
-        for ($i = $startTime; $i < $today; $i += 86400) {
-            $time = $i;
-            for ($k = 0; $k < count($intruments); ++$k) {
-                // echo $user;
-                $instrument = $intruments[$k];
-                $isBuy = $tradeMap[$time][$user][$instrument]['IsBuy'];
-                if ($isBuy != 'TRUE' && $isBuy != 'FALSE') {
-                    $isBuy = '?';
-                }
-                $cache[$user][$time] = $isBuy;
-            }
-        }
-    }
-
     for ($i = $startTime; $i < $today; $i += 86400) {
         $time = $i;
+
+        if (!$candles[$time] || !$candles[$time + $PROFIT_TIME_LINE]) {
+            continue;
+        }
+
         $row = [$time];
 
         for ($j = 0; $j < count($users); ++$j) {
             $user = $users[$j];
+            if (count(array_keys($valueMap[$user])) < 2) {
+                continue;
+            }
             for ($k = 0; $k < count($intruments); ++$k) {
                 $isBuy = $cache[$user][$time];
                 $row[] = $isBuy;
             }
-        }
-
-        // TODO: try nearby days because the selected day could be in the weekend
-        if (!$candles[$time] || !$candles[$time + $PROFIT_TIME_LINE]) {
-            continue;
         }
 
         /*$hilo1 = getHiLo($candles, $time, 1);
