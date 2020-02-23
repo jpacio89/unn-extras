@@ -6,7 +6,8 @@
     // [1001, 1056]
     // [1100, 1149]
     // [1200, 1388]
-    for ($instrumentId = 1; $instrumentId <= 73; ++$instrumentId) {
+    // NOT 20
+    for ($instrumentId = 20; $instrumentId <= 73; ++$instrumentId) {
         for ($j = 0; $j < count($timeWindows); ++$j) {
             $timeWindow = $timeWindows[$j];
             $name = "i{$instrumentId}-{$timeWindow}d";
@@ -61,9 +62,12 @@
         shell_exec("curl -s '{$host}/dataset/mine/1' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/json' --data-binary '{\"targetFeature\":\"gains\",\"featureBlacklist\":[\"time\"],\"groupCount\":{}}' --compressed");
     }
 
-    // TODO: check error generating dataset
     function generateDataset($instrumentId, $timeWindow) {
         shell_exec("php get-dataset.php {$instrumentId} {$timeWindow} > etoro.csv");
+        $dataset = file_get_contents('etoro.csv');
+        if (strpos($dataset, 'VOID_DATASET') !== FALSE) {
+            return FALSE;
+        }
         return TRUE;
     }
 

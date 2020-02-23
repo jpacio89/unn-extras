@@ -61,9 +61,10 @@
     // XRP = 100003
     // Bitcoin Cash = 100002
     // Litecoin = 100005
-    $INSTRUMENT_ETORO_ID = 43;
+    $INSTRUMENT_ETORO_ID = 20;
     $USER_COUNT = 100;
-    $PROFIT_TIME_LINE = 86400 * 14;
+    $PROFIT_TIME_LINE = 86400 * 3;
+    $MIN_FEATURE_COUNT = 15;
 
     if ($argc === 3) {
         $INSTRUMENT_ETORO_ID = $argv[1];
@@ -115,7 +116,7 @@
 
     for ($j = 0; $j < count($users); ++$j) {
         $user = $users[$j];
-        if (count(array_keys($valueMap[$user])) < 2) {
+        if ($valueMap[$user] == NULL || count(array_keys($valueMap[$user])) < 2) {
             //echo "Discarding user... $user\n";
             continue;
         }
@@ -123,6 +124,11 @@
             $instrument = $intruments[$k];
             $header[] = "U$user@I$instrument";
         }
+    }
+
+    if (count($header) < $MIN_FEATURE_COUNT) {
+        echo "VOID_DATASET\n";
+        exit();
     }
 
     /*$header[] = 'hilo1';
@@ -146,7 +152,7 @@
 
         for ($j = 0; $j < count($users); ++$j) {
             $user = $users[$j];
-            if (count(array_keys($valueMap[$user])) < 2) {
+            if ($valueMap[$user] == NULL || count(array_keys($valueMap[$user])) < 2) {
                 continue;
             }
             for ($k = 0; $k < count($intruments); ++$k) {
