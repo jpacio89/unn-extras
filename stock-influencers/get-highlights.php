@@ -1,6 +1,7 @@
 <?php
     $host = 'http://localhost:7000';
     $sessions = getSavedSessions();
+    $insights = array();
 
     for ($i = 0; $i < count($sessions); ++$i) {
         $session = $sessions[$i];
@@ -10,6 +11,10 @@
         if ($prediction['status'] === 500) {
             continue;
         }
+        $sessionParts = explode('-', $session);
+        $insights[$sessionParts[0]][$sessionParts[1]] = $prediction;
+        file_put_contents('digest/insights.json', json_encode($insights));
+        
         echo $session . ' -> ' . json_encode($prediction) . "\n";
     }
 
