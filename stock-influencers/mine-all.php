@@ -1,13 +1,15 @@
 <?php
     $host = 'http://localhost:7000';
-    $timeWindows = array(3, 14, 28, 56);
+    $timeWindows = array(3, 5, 7, 10);
     // [1, 73]
     // [91, 101]
     // [1001, 1056]
     // [1100, 1149]
     // [1200, 1388]
     // NOT 20
-    for ($instrumentId = 20; $instrumentId <= 73; ++$instrumentId) {
+    $range = array(1014, 1056);
+
+    for ($instrumentId = $range[0]; $instrumentId <= $range[1]; ++$instrumentId) {
         for ($j = 0; $j < count($timeWindows); ++$j) {
             $timeWindow = $timeWindows[$j];
             $name = "i{$instrumentId}-{$timeWindow}d";
@@ -21,6 +23,7 @@
             }
 
             loadDataset($name);
+            sleep(30);
             mineDataset();
 
             do {
