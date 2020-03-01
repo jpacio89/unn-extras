@@ -1,13 +1,22 @@
 <?php
-    $USER_COUNT = 10;
+    $USER_COUNT = 100;
     $userRanking = getUserRanking();
     $picks = array();
     $fixtures = array();
     for ($i = 0; $i < $USER_COUNT; ++$i) {
+        echo "$i / $USER_COUNT\n";
         $results = getMatches($userRanking[$i]);
         for($j = 0; $j < count($results); ++$j) {
             $picks[$results[$j]['MatchId']][$userRanking[$i]] = $results[$j]['Pick'];
-            $fixtures[$results[$j]['MatchId']] = $results[$j]['Fixture'];
+            if ($i > 0 && $results[$j]['Fixture'] !== $fixtures[$results[$j]['MatchId']]) {
+                echo "Inconsistent fixture... ".$results[$j]['Fixture']." vs ".$fixtures[$results[$j]['MatchId']]." @ match ".$results[$j]['MatchId']."\n";
+                if ($results[$j]['Fixture'] != '?') {
+                    echo "Fixing...\n";
+                    $fixtures[$results[$j]['MatchId']] = $results[$j]['Fixture'];
+                }
+            } else {
+                $fixtures[$results[$j]['MatchId']] = $results[$j]['Fixture'];
+            }
         }
         $json = array(
             'Fixtures' => $fixtures,
@@ -17,7 +26,7 @@
         sleep(5);
     }
 
-    print_r($picks);
+    //print_r($picks);
 
     $fixturesArray = array_keys($fixtures);
 
@@ -33,9 +42,9 @@
     for ($i = 0; $i < count($fixturesArray); ++$i) {
         $row = [$fixturesArray[$i]];
         $row[] = $fixtures[$fixturesArray[$i]];
-
         for ($j = 0; $j < $USER_COUNT; ++$j) {
-            $row[] = $picks[$fixturesArray[$i]][$userRanking[$j]];
+            $pick = $picks[$fixturesArray[$i]][$userRanking[$j]];
+            $row[] = $pick != '' ? $pick : '?';
         }
         $csv = csvstr($row);
         file_put_contents('data/superbru.csv', "$csv\n", FILE_APPEND);
@@ -55,7 +64,7 @@
     }
 
     function getMatches($playerId) {
-        echo $playerId."\n";
+        // echo $playerId."\n";
         $content = shell_exec("curl -s 'https://www.superbru.com/premierleague_predictor/ajax/write_perf_tipping_overview.php?player_id=" . $playerId . "&_=1583063336582' -H 'Connection: keep-alive' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36' -H 'Sec-Fetch-Dest: document' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' -H 'Sec-Fetch-Site: none' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-User: ?1' -H 'Accept-Language: pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7,sv;q=0.6' -H 'Cookie: PHPSESSID=8k467f5lh46i7qemrtnbsudik0; Superbru_edition=2; _fbp=fb.1.1582936511261.121799545; _ga=GA1.2.1004681880.1582936511; _gid=GA1.2.559868545.1582936511; sb_cookies=y; fbm_6483758771=base_domain=.superbru.com; sb_ses=wymD3lS70ze2TNeqWW2iJMxe%2BFdk9emZXB0qyt0VhfrqhJus9FhTVY9kmUE%3D; sb_per=wymb3li300r4F82%2BLDa1BONoznZP5tv%2BKAwcnMZIrKHBhv7ftRECBKVaz1UWbdF2S%2BCeBQ%3D%3D; X-Mapping-fjhppofk=5DD0FD83DABDD0F4E7D64A0BADCF5FDE; sb_dob_check=iT7Pgg%2FviCe%2FVw%3D%3D' --compressed");
         $parts = explode("data-brutip='<b>", $content);
         $matches = [];
@@ -75,11 +84,11 @@
         $outcome = getMatchOutcome($fixture);
         $prediction = getMatchOutcome($pick);
 
-        echo "Match = $matchId\n";
+        /*echo "Match = $matchId\n";
         echo "Fixture = $fixture\n";
         echo "Pick = $pick\n";
         echo "Result = $outcome\n";
-        echo "Prediction = $prediction\n";
+        echo "Prediction = $prediction\n";*/
 
         return array(
             'MatchId' => $matchId,
@@ -117,15 +126,17 @@
         $scoreAway = $p3[0];
 
         //echo "$scoreHome\n";
-        //echo "$scoreAway\n";
+        // echo "$scoreAway\n";
 
-        if ($scoreHome === $scoreAway) {
+        if ($scoreHome == $scoreAway && $scoreHome != '') {
             return 'Draw';
         } else if ($scoreHome > $scoreAway) {
             return 'HomeWin';
         } else if ($scoreHome < $scoreAway) {
             return 'HomeLose';
         }
+
+        // echo "$match\n";
         return '?';
     }
 
