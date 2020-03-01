@@ -1,13 +1,14 @@
 <?php
     $host = 'http://localhost:7000';
-    $timeWindows = array(3, 5, 7, 10);
+    $timeWindows = array(3, 5, 7, 10, 14, 28, 56);
     // [1, 73]
     // [91, 101]
     // [1001, 1056]
     // [1100, 1149]
     // [1200, 1388]
+    // [100000, 100032]
     // NOT 20
-    $range = array(1014, 1056);
+    $range = array(100000, 100032);
 
     for ($instrumentId = $range[0]; $instrumentId <= $range[1]; ++$instrumentId) {
         for ($j = 0; $j < count($timeWindows); ++$j) {
