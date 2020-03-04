@@ -24,7 +24,7 @@
         );
 
         file_put_contents('data/portfolio-'.$investorId.'.investor.json', json_encode($wrapper));
-        sleep(7);
+        sleep(10);
     }
 
     function getPortfolio($userId, $curlIndex) {
